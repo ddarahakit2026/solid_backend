@@ -1,0 +1,37 @@
+package org.example.api.utils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.example.api.common.BaseResponse;
+
+import java.io.IOException;
+
+public class JsonParser {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    public static <T> T from(String res, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(res, clazz);
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static <T> T from(HttpServletRequest req, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(req.getReader(), clazz);
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String from(BaseResponse res) {
+        try {
+            return objectMapper.writeValueAsString(res);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
